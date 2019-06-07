@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>bodi</title>
+  <title>wimp</title>
   <link rel="stylesheet" href="https://unpkg.com/bulma@0.7.5/css/bulma.css">
   <style>
     [v-cloak] {
@@ -99,7 +99,10 @@
     var app = new Vue({
       el: '#app',
       created() {
-        this.client = window.mqtt.connect(`ws://${location.hostname}:${location.port}/mqtt`)
+        const host = '192.168.1.2'
+        // const host = location.hostname
+        console.log(`ws://${host}:${location.port}/mqtt`)
+        this.client = window.mqtt.connect(`ws://${host}:${location.port}/mqtt`)
         this.client.on('connect', (connack) => {
           console.log(connack)
           this.connection.state = 'connected';
