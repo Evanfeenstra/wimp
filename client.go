@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -41,4 +42,23 @@ func StartClient(port string) {
 		// 	fmt.Println(token.Error())
 		// }
 	})
+}
+
+var notes = []int{60, 62, 64, 67, 69}
+var idx = 0
+
+func loopSend() {
+	if idx == 4 {
+		idx = 0
+	} else {
+		idx = idx + 1
+	}
+	token := mqttClient.Publish("asdf", 0, false, strconv.Itoa(notes[idx]))
+	token.Wait()
+	if token.Error() != nil {
+		fmt.Println(token.Error())
+	}
+	//fmt.Println(notes[idx])
+	time.Sleep(time.Millisecond * 200)
+	loopSend()
 }

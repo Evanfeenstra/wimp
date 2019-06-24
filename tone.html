@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tone</title>
+  <script type="text/javascript" src="https://unpkg.com/tone@13.4.9/build/Tone.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/bulma@0.7.5/css/bulma.css">
+  <style>
+    #app{
+      height:100vh;
+      cursor: pointer;
+      background: teal;
+    }
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+
+  <body>
+    <section id="app" onclick="start()">
+    </section>
+  </body>
+
+  <script src="https://unpkg.com/vue@2.5.9"></script>
+<script>
+  var synth;
+  function start(){
+    if (!synth) {
+      synth = new Tone.MonoSynth({
+        "oscillator" : {
+          "type" : "triangle"
+        },
+        "envelope" : {
+          "attack" : 0.1
+        }
+      }).toMaster();
+      Tone.Transport.start()
+    } else {
+      playNote()
+    }
+  } // end start
+  function playNote(){
+    var loop = new Tone.Sequence(function(time, col){
+      console.log(col)
+      const freq = Tone.Midi(col).toFrequency()
+      synth.triggerAttackRelease(freq, "8n");
+    }, ["89", "96", "84", "72"], "16n").start(0)
+    setTimeout(()=>loop.stop(), 2000)
+  }
+
+</script>
+
+</head>

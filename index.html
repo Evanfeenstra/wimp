@@ -99,8 +99,8 @@
     var app = new Vue({
       el: '#app',
       created() {
-        const host = '192.168.1.2'
-        // const host = location.hostname
+        //const host = '192.168.1.2'
+        const host = location.hostname
         console.log(`ws://${host}:${location.port}/mqtt`)
         this.client = window.mqtt.connect(`ws://${host}:${location.port}/mqtt`)
         this.client.on('connect', (connack) => {
