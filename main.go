@@ -44,11 +44,19 @@ func loop(s *serial.Port) {
 			return
 		}
 		//fmt.Printf("%q\n", buf[:n])
-		fmt.Println(string(buf[:n]))
+		//fmt.Println(string(buf[:n]))
+		s := string(buf[:n])
+		a := strings.Split(s, ":")
+		last := a[len(a)-1]
+		secondToLast := a[len(a)-2]
+		thirdToLastWithSomeLeftover := a[len(a)-3]
+		thirdToLast := thirdToLastWithSomeLeftover[len(thirdToLastWithSomeLeftover)-1:]
 
+		msg := thirdToLast + ":" + secondToLast + ":" + last
+		fmt.Println(msg)
 		time.Sleep(5 * time.Millisecond)
 
-		mqttClient.Publish("asdf", 0, false, string(buf[:n]))
+		mqttClient.Publish("asdf", 0, false, msg)
 	}
 
 }

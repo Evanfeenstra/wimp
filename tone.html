@@ -25,30 +25,61 @@
 
   <script src="https://unpkg.com/vue@2.5.9"></script>
 <script>
-  var synth;
+  var synths = [];
+  let voice = 0;
+  let started = true
+  Tone.Transport.start()
+  for (var i=0; i<16; i++) {
+    synths[i] = new Tone.MonoSynth({
+      "oscillator" : {
+        "type" : "triangle"
+      },
+      "envelope" : {
+        "attack" : 0.1
+      }
+    }).toMaster();
+  }
   function start(){
-    if (!synth) {
-      synth = new Tone.MonoSynth({
-        "oscillator" : {
-          "type" : "triangle"
-        },
-        "envelope" : {
-          "attack" : 0.1
-        }
-      }).toMaster();
+    if (!started) {
+      Tone.Transport.bpm.value = 200
       Tone.Transport.start()
+      document.getElementById("app").style.background='black'
+      started=true
     } else {
-      playNote()
+      console.log("ASDFASDFASDF")
+      // playPart("60","4n","16n",16)
+      // playPart("67","2t","16n",12)
+      // playPart("72","1m","32n",4)
+      bigLoop()
     }
   } // end start
-  function playNote(){
-    var loop = new Tone.Sequence(function(time, col){
-      console.log(col)
+  function playPart(note, repeat, notelength, reps){
+    const synth = synths[voice]
+    voice++
+    if (voice===16) voice=0
+    console.log(voice)
+    notes = Array.from({length:reps}, (v, i) => [i*Tone.Time(repeat), note])
+    var part = new Tone.Part(function(time, col){
       const freq = Tone.Midi(col).toFrequency()
-      synth.triggerAttackRelease(freq, "8n");
-    }, ["89", "96", "84", "72"], "16n").start(0)
-    setTimeout(()=>loop.stop(), 2000)
+      synth.triggerAttackRelease(freq, notelength, time);
+    }, notes)
+    part.probability = 0.99;
+    note.humanize = "32n";
+    part.start()
   }
+
+  let hi=true
+  function bigLoop(){
+    var loop = new Tone.Loop(function(){
+      const high = hi?"72":"74"
+      hi = !hi
+      console.log(hi,"ASDFASDF")
+      playPart("60","4n","16n",8)
+      playPart("67","2t","16n",6)
+      playPart(high,"2m","32n",2)
+    }, "2m").start();
+  }
+  
 
 </script>
 

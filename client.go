@@ -42,6 +42,8 @@ func StartClient(port string) {
 		// 	fmt.Println(token.Error())
 		// }
 	})
+
+	//go loopSend()
 }
 
 var notes = []int{60, 62, 64, 67, 69}
@@ -53,12 +55,13 @@ func loopSend() {
 	} else {
 		idx = idx + 1
 	}
-	token := mqttClient.Publish("asdf", 0, false, strconv.Itoa(notes[idx]))
+	msg := "1:" + strconv.Itoa(notes[idx]) + ":100"
+	token := mqttClient.Publish("asdf", 0, false, msg)
 	token.Wait()
 	if token.Error() != nil {
 		fmt.Println(token.Error())
 	}
-	//fmt.Println(notes[idx])
-	time.Sleep(time.Millisecond * 200)
+	fmt.Println(msg)
+	time.Sleep(time.Millisecond * 100)
 	loopSend()
 }
